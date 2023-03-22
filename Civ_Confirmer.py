@@ -23,7 +23,7 @@ def check(filepath):
         data = json.load(f)
 
     # Connect to the database (creates a new file if it doesn't exist)
-    conn = sqlite3.connect('Database/Database.db')
+    conn = sqlite3.connect("Database/Database.db")
     c = conn.cursor()
 
     c.execute("SELECT oid, * FROM Final")
@@ -37,7 +37,12 @@ def check(filepath):
 
     while k < len(data["bonuses"][0]):
         if "and" in data01[data["bonuses"][0][k]][3]:
-            stacking_list += [data01[data["bonuses"][0][k]][3].split(" and ")]
+            slt = [data01[data["bonuses"][0][k]][3].split(" and ")]
+            c = 0
+            while c < len(slt[0]):
+                print(slt[0][c])
+                stacking_list += [slt[0][c]]
+                c += 1
         else:
             stacking_list += [data01[data["bonuses"][0][k]][3]]
         k += 1
@@ -52,6 +57,7 @@ def check(filepath):
                 break
 
 
+    print(stacking_list)
     results_stack = 0
     if "ARCHER BONUS" in stacking_list and stacking_list.count("ARCHER BONUS") > 0:
         results_stack += (stacking_list.count("ARCHER BONUS"))-1
@@ -81,8 +87,6 @@ def check(filepath):
     text01 = ""
     text02 = ""
 
-    print(results, results_stack)
-    print(sum(results) + results_stack)
     if sum(results) + results_stack > 8:
         text01 = "Unaproved with " + str(sum(results) + results_stack - 8) + " points over"
     elif sum(results) + results_stack == 8:
@@ -139,7 +143,6 @@ def database():
         m += 1
 
     c.execute("SELECT * FROM Descriptions")
-    teste00 = c.fetchall()
 
 
     with open("Database/Lista_bonus.txt", "r") as f:

@@ -3,8 +3,6 @@ import sqlite3
 import tkinter as tk
 from tkinter import filedialog
 
-global file_path
-
 def Feed_Database():
     database()
     joiner()
@@ -19,16 +17,16 @@ def select_file():
 
 def check(filepath):
 
-    with open(filepath, 'r') as f:
-        data = json.load(f)
+    with open(filepath, 'r') as File_Readed:
+        data = json.load(File_Readed)
 
     # Connect to the database (creates a new file if it doesn't exist)
     conn = sqlite3.connect("Database/Database.db")
-    c = conn.cursor()
+    Database_executer = conn.cursor()
 
-    c.execute("SELECT oid, * FROM Final")
+    Database_executer.execute("SELECT oid, * FROM Final")
 
-    data01 = c.fetchall()
+    data01 = Database_executer.fetchall()
 
     results = []
     results_stack = 0
@@ -40,7 +38,6 @@ def check(filepath):
             slt = [data01[data["bonuses"][0][k]][3].split(" and ")]
             c = 0
             while c < len(slt[0]):
-                print(slt[0][c])
                 stacking_list += [slt[0][c]]
                 c += 1
         else:
@@ -56,8 +53,6 @@ def check(filepath):
             if k == len(data01):
                 break
 
-
-    print(stacking_list)
     results_stack = 0
     if "ARCHER BONUS" in stacking_list and stacking_list.count("ARCHER BONUS") > 0:
         results_stack += (stacking_list.count("ARCHER BONUS"))-1
@@ -83,9 +78,6 @@ def check(filepath):
         results_stack += (stacking_list.count("RESOURCE BONUS"))-1
 
     # check the bonus type, 3rd place
-
-    text01 = ""
-    text02 = ""
 
     if sum(results) + results_stack > 8:
         text01 = "Unaproved with " + str(sum(results) + results_stack - 8) + " points over"
@@ -122,16 +114,16 @@ def check(filepath):
 def database():
     # Connect to the database (creates a new file if it doesn't exist)
     conn = sqlite3.connect('Database/Database.db')
-    c = conn.cursor()
+    Database_executer = conn.cursor()
 
-    c.execute("DROP TABLE IF EXISTS Descriptions")
-    c.execute("DROP TABLE IF EXISTS Civ_Bonus")
-    c.execute("DROP TABLE IF EXISTS Final")
+    Database_executer.execute("DROP TABLE IF EXISTS Descriptions")
+    Database_executer.execute("DROP TABLE IF EXISTS Civ_Bonus")
+    Database_executer.execute("DROP TABLE IF EXISTS Final")
 
     # Create a new table
-    c.execute("CREATE TABLE IF NOT EXISTS Descriptions (Description TEXT, Points INTEGER)")
-    c.execute("CREATE TABLE IF NOT EXISTS Civ_Bonus (Bonus TEXT, Points REAL, Type TEXT)")
-    c.execute("CREATE TABLE IF NOT EXISTS Final (Description Text, Points REAL, Type TEXT)")
+    Database_executer.execute("CREATE TABLE IF NOT EXISTS Descriptions (Description TEXT, Points INTEGER)")
+    Database_executer.execute("CREATE TABLE IF NOT EXISTS Civ_Bonus (Bonus TEXT, Points REAL, Type TEXT)")
+    Database_executer.execute("CREATE TABLE IF NOT EXISTS Final (Description Text, Points REAL, Type TEXT)")
 
     # Insert some data
 
@@ -139,10 +131,10 @@ def database():
         list00 = [line00.strip() for line00 in h]
     m = 0
     for i in list00:
-        c.execute("INSERT INTO Descriptions VALUES (?, ?)", (list00[m], 0))
+        Database_executer.execute("INSERT INTO Descriptions VALUES (?, ?)", (list00[m], 0))
         m += 1
 
-    c.execute("SELECT * FROM Descriptions")
+    Database_executer.execute("SELECT * FROM Descriptions")
 
 
     with open("Database/Lista_bonus.txt", "r") as f:
@@ -156,12 +148,9 @@ def database():
 
     n = 0
     for read01 in list01:
-        c.execute("INSERT INTO Civ_Bonus (Bonus, Points, Type) VALUES (?, ?, ?)", (list01[n], list02[n], list03[n],))
+        Database_executer.execute("INSERT INTO Civ_Bonus (Bonus, Points, Type) VALUES (?, ?, ?)", (list01[n], list02[n], list03[n],))
 
         n += 1
-
-    c.execute("SELECT * FROM Civ_Bonus")
-    teste01 = c.fetchall()
 
     # Commit the changes and close the connection
     conn.commit()
@@ -234,12 +223,12 @@ label_width = int(window_width * 0.8)
 button0 = tk.Button(root, text="Feed database", command=Feed_Database)
 button1 = tk.Button(root, text="Check")
 Label1 = tk.Label(root)
-Label2 = tk.Label(root, anchor="w", justify="left")
+Label2 = tk.Label(root, justify="left")
 
 button0.place(relheight=0.2, relwidth=0.8, relx=0.1, rely=0.1)
 button1.place(relheight=0.2, relwidth=0.8, relx=0.1, rely=0.3)
 Label1.place(relheight=0.1, relwidth=0.8, relx=0.1, rely=0.9)
-Label2.place(relheight=0.3, relwidth=0.8, relx=0.1, rely=0.5)
+Label2.place(relheight=0.4, relwidth=0.8, relx=0.1, rely=0.5)
 
 root.mainloop()
 

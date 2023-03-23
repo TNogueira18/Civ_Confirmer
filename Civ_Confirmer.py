@@ -6,7 +6,6 @@ from tkinter import filedialog
 def Feed_Database():
     database()
     joiner()
-    button1.config(command=select_file)
     Label1.config(text="Database was fed")
 
 def select_file():
@@ -116,15 +115,16 @@ def database():
     conn = sqlite3.connect('Database/Database.db')
     Database_executer = conn.cursor()
 
-    Database_executer.execute("DROP TABLE IF EXISTS Descriptions")
-    Database_executer.execute("DROP TABLE IF EXISTS Civ_Bonus")
-    Database_executer.execute("DROP TABLE IF EXISTS Final")
+    #Database_executer.execute("DROP TABLE IF EXISTS Descriptions")
+    #Database_executer.execute("DROP TABLE IF EXISTS Civ_Bonus")
+    #Database_executer.execute("DROP TABLE IF EXISTS Final")
 
     # Create a new table
     Database_executer.execute("CREATE TABLE IF NOT EXISTS Descriptions (Description TEXT, Points INTEGER)")
     Database_executer.execute("CREATE TABLE IF NOT EXISTS Civ_Bonus (Bonus TEXT, Points REAL, Type TEXT)")
     Database_executer.execute("CREATE TABLE IF NOT EXISTS Final (Description Text, Points REAL, Type TEXT)")
 
+    """
     # Insert some data
 
     with open("Database/Lista_CB.txt", "r") as h:
@@ -151,6 +151,8 @@ def database():
         Database_executer.execute("INSERT INTO Civ_Bonus (Bonus, Points, Type) VALUES (?, ?, ?)", (list01[n], list02[n], list03[n],))
 
         n += 1
+    """
+
 
     # Commit the changes and close the connection
     conn.commit()
@@ -221,7 +223,7 @@ window_width = root.winfo_width()
 label_width = int(window_width * 0.8)
 
 button0 = tk.Button(root, text="Feed database", command=Feed_Database)
-button1 = tk.Button(root, text="Check")
+button1 = tk.Button(root, text="Check", command=select_file)
 Label1 = tk.Label(root)
 Label2 = tk.Label(root, justify="left")
 
